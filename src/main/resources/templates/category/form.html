@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{_layouts/base :: layout(~{::title}, ~{::main})}">
+<head>
+    <title th:text="${category.id == null ? 'Nova Categoria' : 'Editar Categoria'}"></title>
+</head>
+<body>
+<main>
+    <div class="container mt-4">
+        <h2 th:text="${category.id == null ? 'Nova Categoria' : 'Editar Categoria'}"></h2>
+
+        <form th:action="${category.id == null ? '/categories' : '/categories/' + category.id}" 
+              th:object="${category}" method="post" class="needs-validation" novalidate>
+            
+            <div class="mb-3">
+                <label for="name" class="form-label">Nome da Categoria</label>
+                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                <div class="invalid-feedback">
+                    Por favor, informe o nome da categoria.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <a href="/categories" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

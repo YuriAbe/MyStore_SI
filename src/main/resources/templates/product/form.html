@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{_layouts/base :: layout(~{::title}, ~{::main})}">
+<head>
+    <title th:text="${product.id == null ? 'Novo Produto' : 'Editar Produto'}"></title>
+</head>
+<body>
+<main>
+    <div class="container mt-4">
+        <h2 th:text="${product.id == null ? 'Novo Produto' : 'Editar Produto'}"></h2>
+
+        <form th:action="${product.id == null ? '/products' : '/products/' + product.id}" 
+              th:object="${product}" method="post" class="needs-validation" novalidate>
+            
+            <div class="mb-3">
+                <label for="name" class="form-label">Nome do Produto</label>
+                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                <div class="invalid-feedback">
+                    Por favor, informe o nome do produto.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="category" class="form-label">Categoria</label>
+                <select class="form-select" id="category" th:field="*{category}" required>
+                    <option value="">Selecione uma categoria</option>
+                    <option th:each="category : ${categories}" 
+                            th:value="${category.id}" 
+                            th:text="${category.name}"></option>
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, selecione uma categoria.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <a href="/products" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Date;
 
@@ -19,7 +18,7 @@ public class GlobalHandlerExceptions {
         String message;
         String redirectTo;
         System.out.println("classe: " + ex.getClass().toString());
-        if(ex instanceof NoResourceFoundException){
+        if(ex.getClass().getName().contains("NoResourceFoundException")){
             message = "Página ou arquivo não encontrado!";
             redirectTo = "error404" ;
         } else {

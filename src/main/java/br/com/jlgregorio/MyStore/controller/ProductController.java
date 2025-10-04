@@ -20,11 +20,6 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
 
-//    @GetMapping
-//    public String index(){
-//        return "product/index";
-//    }
-
     @Autowired
     private ProductRepository productRepository;
 
@@ -32,37 +27,34 @@ public class ProductController {
     private CategoryRepository categoryRepository;
 
     @GetMapping
-    public String index(Model model){
+    public String index(Model model) {
         List<ProductModel> products = productRepository.findAll();
         model.addAttribute("products", products);
         return "product/index";
     }
 
-    @GetMapping("/create")
-    public ModelAndView create(){
-        ModelAndView mv = new ModelAndView("product/create");
-        ProductModel productModel = new ProductModel();
-        productModel.setCategory(new CategoryModel());
+    @GetMapping("/new")
+    public String newProduct(Model model) {
         List<CategoryModel> categories = categoryRepository.findAll();
-        mv.addObject("product", productModel);
-        mv.addObject("categories", categories);
-        return mv;
+        model.addAttribute("product", new ProductModel());
+        model.addAttribute("categories", categories);
+        return "product/create";
     }
 
     @PostMapping
-    public String save(@ModelAttribute("product") ProductModel productModel,
-                       RedirectAttributes redirectAttributes){
-        productRepository.save(productModel);
-        redirectAttributes.addFlashAttribute("message",
-                "Produto salvo com sucesso!");
+    public String create(@ModelAttribute ProductModel product, RedirectAttributes redirectAttributes) {
+        CategoryModel category = categoryRepository.findById(product.getCategory().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada!"));
+        product.setCategory(category);
+        productRepository.save(product);
+        redirectAttributes.addFlashAttribute("message", "Produto criado com sucesso!");
         return "redirect:/products";
     }
 
     @GetMapping("/{id}/edit")
-    public ModelAndView edit( @PathVariable long id ){
-        var found = productRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Produto não encontrado!")
-        );
+    public ModelAndView edit(@PathVariable long id) {
+        var found = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado!"));
         ModelAndView mv = new ModelAndView("product/edit");
         mv.addObject("product", found);
         mv.addObject("categories", categoryRepository.findAll());
@@ -70,38 +62,35 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable long id,
-            @ModelAttribute("product") ProductModel productModel,
-                         RedirectAttributes redirectAttributes){
-        var found = productRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Produto não encontrado!")
-        );
-        found.setName(productModel.getName());
-        found.setCategory(productModel.getCategory());
+    public String update(@PathVariable long id, @ModelAttribute ProductModel product,
+                        RedirectAttributes redirectAttributes) {
+        var found = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado!"));
+        
+        CategoryModel category = categoryRepository.findById(product.getCategory().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada!"));
+        
+        found.setName(product.getName());
+        found.setCategory(category);
         productRepository.save(found);
-        redirectAttributes.addFlashAttribute(
-                "message", "Produto atualizado com sucesso!");
+        
+        redirectAttributes.addFlashAttribute("message", "Produto atualizado com sucesso!");
         return "redirect:/products";
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable long id,
-                         RedirectAttributes redirectAttributes){
-        var found = productRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Produto não encontrado!")
-        );
+    public String delete(@PathVariable long id, RedirectAttributes redirectAttributes) {
+        var found = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado!"));
         productRepository.delete(found);
-        redirectAttributes.addFlashAttribute("message",
-                "Produto excluído com sucesso!");
+        redirectAttributes.addFlashAttribute("message", "Produto excluído com sucesso!");
         return "redirect:/products";
     }
 
     @GetMapping("/{id}/show")
-    public ResponseEntity<ProductModel> show(@PathVariable long id){
-        var found = productRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("Produto não encontrado!")
-        );
+    public ResponseEntity<ProductModel> show(@PathVariable long id) {
+        var found = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado!"));
         return new ResponseEntity<>(found, HttpStatus.OK);
     }
-
 }
