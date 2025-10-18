@@ -1,13 +1,16 @@
 server:
   port: 8889
+
 spring:
   application:
     name: MyStore
+  
   datasource:
     url: jdbc:postgresql://localhost:5432/mystore
     username: postgres
     password: 123456
     driver-class-name: org.postgresql.Driver
+  
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,10 +19,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-  mvc:
-    hiddenmethod:
-      filter:
-        enabled: true
+    defer-datasource-initialization: true
+  
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+  
   mvc:
     hiddenmethod:
       filter:

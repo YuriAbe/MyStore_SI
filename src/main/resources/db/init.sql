@@ -1,8 +1,11 @@
-CREATE DATABASE mystore WITH 
+-- Execute este script APENAS para criar o banco de dados manualmente
+-- No pgAdmin ou psql (antes de iniciar a aplicação)
+
+-- Conecte-se ao PostgreSQL como usuário postgres e execute:
+CREATE DATABASE mystore 
+WITH 
     OWNER = postgres
     ENCODING = 'UTF8'
-    LC_COLLATE = 'Portuguese_Brazil.1252'
-    LC_CTYPE = 'Portuguese_Brazil.1252'
-    TABLESPACE = pg_default
-    CONNECTION LIMIT = -1
-    IS_TEMPLATE = False;
+    CONNECTION LIMIT = -1;
+
+-- Após criar o banco, a aplicação Spring Boot criará as tabelas automaticamente
