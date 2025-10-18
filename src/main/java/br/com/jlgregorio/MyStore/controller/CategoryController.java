@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -39,35 +40,43 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable Long id, Model model) {
-        CategoryModel category = categoryRepository.findById(id)
+    public ModelAndView edit(@PathVariable Long id) {
+        var found = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
-        model.addAttribute("category", category);
-        return "category/form";
+        ModelAndView mv = new ModelAndView("category/form");
+        mv.addObject("category", found);
+        return mv;
     }
 
-    @PostMapping("/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute CategoryModel category, 
-                        RedirectAttributes redirectAttributes) {
-        categoryRepository.findById(id)
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id, @ModelAttribute CategoryModel category, RedirectAttributes redirectAttributes) {
+        var found = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
-        category.setId(id);
-        categoryRepository.save(category);
+        found.setName(category.getName());
+        categoryRepository.save(found);
         redirectAttributes.addFlashAttribute("message", "Categoria atualizada com sucesso!");
         return "redirect:/categories";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        CategoryModel category = categoryRepository.findById(id)
+        var found = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
         try {
-            categoryRepository.delete(category);
+            categoryRepository.delete(found);
             redirectAttributes.addFlashAttribute("message", "Categoria excluída com sucesso!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", 
-                "Não é possível excluir uma categoria que possui produtos!");
+            redirectAttributes.addFlashAttribute("error", "Não é possível excluir uma categoria que possui produtos!");
         }
         return "redirect:/categories";
+    }
+
+    @GetMapping("/{id}/show")
+    public ModelAndView show(@PathVariable Long id) {
+        var found = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
+        ModelAndView mv = new ModelAndView("category/show");
+        mv.addObject("category", found);
+        return mv;
     }
 }

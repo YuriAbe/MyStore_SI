@@ -11,8 +11,7 @@
         <div style="min-height: 600px" class="p-3">
             <h1 class="text-primary">Categorias</h1>
             <hr>
-            <!--     **************************************************************       -->
-            <button class="btn btn-primary">Adicionar Categoria</button>
+            <a href="/categories/new" class="btn btn-primary">Adicionar Categoria</a>
             <table class="table">
                 <thead>
                     <th>ID</th>
@@ -23,17 +22,73 @@
                     <tr th:each="category : ${categories}">
                         <td th:text="${category.id}"></td>
                         <td th:text="${category.name}"></td>
-                        <td> <button class="btn btn-primary">Visualizar</button> </td>
-                        <td> <button class="btn btn-info">Editar</button> </td>
-                        <td> <button class="btn btn-danger">Excluir</button> </td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-visualizar"
+                                data-bs-toggle="modal" data-bs-target="#modalCategoria"
+                                th:attr="data-id=${category.id},data-name=${category.name}">
+                                Visualizar
+                            </button>
+                        </td>
+                        <td>
+                            <a th:href="@{'/categories/' + ${category.id} + '/edit'}" class="btn btn-info">Editar</a>
+                        </td>
+                        <td>
+                            <form th:action="@{'/categories/' + ${category.id}}" method="post" th:object="${category}" style="display:inline;">
+                                <input type="hidden" name="_method" value="delete" />
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir?');">Excluir</button>
+                            </form>
+                        </td>
                     </tr>
                 </tbody>
-
             </table>
-
-
-            <!--     **************************************************************       -->
         </div>
+        <!-- Modal Visualizar Categoria -->
+        <div class="modal fade" id="modalCategoria" tabindex="-1" aria-labelledby="modalCategoriaLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalCategoriaLabel">Detalhes da Categoria</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p><strong>ID:</strong> <span id="modalCategoriaId"></span></p>
+                <p><strong>Nome:</strong> <span id="modalCategoriaNome"></span></p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Carregado');
+            var modalCategoria = document.getElementById('modalCategoria');
+            console.log('Modal elemento:', modalCategoria);
+            
+            if (typeof bootstrap !== 'undefined') {
+                console.log('Bootstrap disponível');
+                var modal = new bootstrap.Modal(modalCategoria);
+                
+                document.querySelectorAll('.btn-visualizar').forEach(function(btn) {
+                    console.log('Botão encontrado:', btn);
+                    btn.addEventListener('click', function(e) {
+                        console.log('Botão clicado');
+                        var id = this.getAttribute('data-id');
+                        var name = this.getAttribute('data-name');
+                        console.log('ID:', id, 'Nome:', name);
+                        
+                        document.getElementById('modalCategoriaId').textContent = id;
+                        document.getElementById('modalCategoriaNome').textContent = name;
+                        
+                        modal.show(); // Forçar a exibição do modal
+                    });
+                });
+            } else {
+                console.error('Bootstrap não está disponível');
+            }
+          });
+        </script>
     </div>
 </main>
 </body>

@@ -18,11 +18,29 @@ public class ProductModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 100, nullable = false)
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryModel category;
+    
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private java.util.Date createdAt;
+    
+    @Column(name = "updated_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private java.util.Date updatedAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        createdAt = updatedAt = new java.util.Date();
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new java.util.Date();
+    }
 
 }

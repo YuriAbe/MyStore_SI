@@ -10,7 +10,8 @@
 
         <form th:action="${category.id == null ? '/categories' : '/categories/' + category.id}" 
               th:object="${category}" method="post" class="needs-validation" novalidate>
-            
+            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:if="${category.id != null}" name="_method" value="put" />
             <div class="mb-3">
                 <label for="name" class="form-label">Nome da Categoria</label>
                 <input type="text" class="form-control" id="name" th:field="*{name}" required>
