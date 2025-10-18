@@ -1,0 +1,42 @@
+# Configuração para ambiente de DESENVOLVIMENTO (H2 Database)
+# Use este perfil quando NÃO tiver PostgreSQL instalado
+
+server:
+  port: 8889
+
+spring:
+  application:
+    name: MyStore
+  
+  # Configuração H2 Database (em memória)
+  datasource:
+    url: jdbc:h2:mem:mystore
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  
+  # Console H2 para debug
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+    defer-datasource-initialization: true
+  
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+  
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true

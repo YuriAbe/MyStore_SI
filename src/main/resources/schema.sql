@@ -1,2 +1,0 @@
--- Schema é gerenciado automaticamente pelo JPA (hibernate.ddl-auto=update)
--- Este arquivo não é necessário quando usamos JPA

@@ -30,17 +30,36 @@
                             </button>
                         </td>
                         <td>
-                            <a th:href="@{'/categories/' + ${category.id} + '/edit'}" class="btn btn-info">Editar</a>
+                            <a th:href="@{/categories/{id}/edit(id=${category.id})}" class="btn btn-info">Editar</a>
                         </td>
                         <td>
-                            <form th:action="@{'/categories/' + ${category.id}}" method="post" th:object="${category}" style="display:inline;">
+                            <form class="delete-form" th:action="@{/categories/{id}(id=${category.id})}" method="post">
                                 <input type="hidden" name="_method" value="delete" />
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir?');">Excluir</button>
+                                <button type="submit" class="btn btn-danger">Excluir</button>
                             </form>
                         </td>
                     </tr>
                 </tbody>
             </table>
+            
+            <!-- Toast para mensagens -->
+            <div th:replace="~{_fragments/toast :: toast(${message})}"></div>
+            
+            <!-- Script do modal.js para confirmação -->
+            <script th:src="@{/js/modal.js}"></script>
+            
+            <!-- Event listener para confirmação de exclusão -->
+            <script>
+                document.querySelectorAll('.delete-form').forEach(form => {
+                    form.addEventListener("submit", async (e) => {
+                        e.preventDefault();
+                        const confirm = await showConfirmModal("Confirme", "Deseja excluir essa categoria?");
+                        if(confirm){
+                            form.submit();
+                        }
+                    })
+                })
+            </script>
         </div>
         <!-- Modal Visualizar Categoria -->
         <div class="modal fade" id="modalCategoria" tabindex="-1" aria-labelledby="modalCategoriaLabel" aria-hidden="true">

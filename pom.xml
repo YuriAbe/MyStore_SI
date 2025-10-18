@@ -57,6 +57,13 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>42.7.4</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- H2 Database - Fallback para desenvolvimento/testes -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
 		</dependency>
         <!-- JPA - Java Persistence API - Hibernate ORM	-->
 		<dependency>
